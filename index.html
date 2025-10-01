@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>German Archaeological NER</title>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.4.0"></script>
+</head>
+<body>
+    <h2>German Archaeological Named Entity Recognition</h2>
+    <input type="text" id="inputText" placeholder="Enter German text..." style="width:500px"><br><br>
+    <button onclick="performNER()">Analyze</button><br><br>
+    <div id="output">Output will appear here...</div>
+
+    <script>
+        // Initialize model
+        let extractor = null;
+        async function loadModel() {
+            const model = 'alexbrandsen/bert-base-german-cased-archaeo-NER';
+            extractor = await window.Transformer.load('NER', model);
+        }
+        loadModel();
+
+        async function performNER() {
+            if (!extractor) {
+                alert('Model not loaded yet. Please wait...');
+                return;
+            }
+            
+            const input = document.getElementById('inputText').value;
+            if (!input) {
+                alert('Please enter some text');
+                return;
+            }
+
+            const output = document.getElementById('output');
+            output.innerHTML = 'Processing...';
+
+            try {
+                const result = await extractor(input);
+                output.innerHTML = '<h3>Detected Entities:</h3>';
+                
+                result.forEach(entity => {
+                    output.innerHTML += `<p><b>${entity.word}</b> (${entity.entity_group}): ${entity.score.toFixed(4)}</p>`;
+                });
+            } catch (error) {
+                output.innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
