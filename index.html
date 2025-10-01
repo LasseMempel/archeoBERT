@@ -15,7 +15,7 @@
         let extractor = null;
         async function loadModel() {
             const model = 'alexbrandsen/bert-base-german-cased-archaeo-NER';
-            extractor = await window.Transformer.load('NER', model);
+            extractor = await window.TransformersNER.from_pretrained(model);
         }
         loadModel();
 
